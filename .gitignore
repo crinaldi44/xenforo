@@ -1,0 +1,8 @@
+##*
+#!.gitignore
+#!README.md
+#!LICENSE
+#!docker-compose.yml
+#!cmd.sh
+##!web/
+web/openjdk-11.0.2_linux-x64_bin.tar.gz

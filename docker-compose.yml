@@ -1,0 +1,52 @@
+services:
+  web:
+    build:
+      context: ./web
+      args:
+        - LOCAL_USER_ID=197612
+        - LOCAL_GROUP_ID=197612
+    container_name: xfdev
+    networks:
+      - bridgenet
+    links:
+      - "db"
+    depends_on:
+      - db
+    volumes:
+      - ./web/xenforo/:/var/www/html/
+      - ./web/config.php:/var/www/html/src/config.php
+    ports:
+      - "80:80"
+      - "443:443"
+    user: xenforo:xenforo
+    environment:
+      - APACHE_RUN_USER=xenforo
+      - APACHE_RUN_GROUP=xenforo
+  db:
+    image: mysql:latest
+    container_name: xfdb
+    networks:
+      - bridgenet
+    ports:
+      - "3306:3306"
+    volumes:
+      - xfdb-data:/var/lib/mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=xf2
+      - MYSQL_USER=xenforo
+      - MYSQL_PASSWORD=xfdev
+
+
+volumes:
+  xfdb-data: {}
+
+
+networks:
+  bridgenet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.0.0/16
+          gateway: 172.24.0.1
